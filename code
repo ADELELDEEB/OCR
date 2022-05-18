@@ -1,0 +1,32 @@
+from cgitb import text
+from tkinter import font
+import numpy as np
+import argparse
+import cv2
+import imutils
+import easyocr
+from matplotlib import pyplot as plt
+
+img_path="E:\projects\spark foundation/test2.jfif"
+reader=easyocr.Reader(['en'],gpu=False)
+result=reader.readtext(img_path)
+result
+
+top_left=tuple(result[0][0][0])
+bottom_right=tuple(result[0][0][2])
+text=result[0][1]
+font=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX
+
+img=cv2.imread(img_path)
+for detection in result:
+    top_left=tuple([int(val) for val in detection[0][0]])
+    bottom_right=tuple([int(val) for val in detection[0][2]])
+    text=detection[1]
+    font=cv2.FONT_HERSHEY_COMPLEX
+    img=cv2.rectangle(img,top_left,bottom_right,(0,255,0), 5)
+    img=cv2.putText(img, text, top_left, font, 1, (255,0,0), 2, cv2.LINE_AA)
+
+
+plt.figure(figsize=(10,10))
+plt.imshow(img)
+plt.show()
